@@ -239,14 +239,15 @@ fi
 if [ "$TRY_GH_INSTALL" = true ] && command -v gh &> /dev/null; then
     print_info "Attempting to install gh-aw using 'gh extension install'..."
     
-    # Build the install command with version pinning if specified
-    INSTALL_CMD="gh extension install \"$REPO\" --force"
+    # Call gh extension install directly to avoid command injection
+    install_result=0
     if [ -n "$VERSION" ] && [ "$VERSION" != "latest" ]; then
-        INSTALL_CMD="gh extension install \"$REPO\" --force --pin \"$VERSION\""
+        gh extension install "$REPO" --force --pin "$VERSION" 2>&1 | tee /tmp/gh-install.log || install_result=$?
+    else
+        gh extension install "$REPO" --force 2>&1 | tee /tmp/gh-install.log || install_result=$?
     fi
     
-    # Try to install using gh
-    if eval "$INSTALL_CMD" 2>&1 | tee /tmp/gh-install.log; then
+    if [ $install_result -eq 0 ]; then
         # Verify the installation succeeded
         if gh aw version &> /dev/null; then
             INSTALLED_VERSION=$(gh aw version 2>&1 | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1)
