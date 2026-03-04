@@ -87,11 +87,12 @@ test_version_pinning() {
   echo ""
   echo "Test 5: Verify version pinning for gh extension install"
   
-  # Check if script uses --pin flag for version specification
-  if grep -q "\-\-pin.*VERSION" "$SCRIPT_PATH"; then
-    print_result "Script supports version pinning" "PASS"
+  # Check if script uses --pin flag with $VERSION variable AND checks VERSION != "latest"
+  if grep -q -- '--pin.*\$VERSION' "$SCRIPT_PATH" && \
+     grep -q '"\$VERSION" != "latest"' "$SCRIPT_PATH"; then
+    print_result "Script supports version pinning with correct variable usage" "PASS"
   else
-    print_result "Script missing version pinning support" "FAIL"
+    print_result "Script missing proper version pinning support (must use --pin with \$VERSION and check VERSION != latest)" "FAIL"
   fi
 }
 
