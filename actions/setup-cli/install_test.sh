@@ -59,7 +59,7 @@ test_executable() {
 # Test 3: Verify INPUT_VERSION support
 test_input_version() {
   echo ""
-  echo "Test 4: Verify INPUT_VERSION environment variable support"
+  echo "Test 3: Verify INPUT_VERSION environment variable support"
   
   # Check if script references INPUT_VERSION
   if grep -q "INPUT_VERSION" "$SCRIPT_PATH"; then
@@ -69,10 +69,10 @@ test_input_version() {
   fi
 }
 
-# Test 5: Verify gh extension install attempt
+# Test 4: Verify gh extension install attempt
 test_gh_install() {
   echo ""
-  echo "Test 5: Verify gh extension install logic"
+  echo "Test 4: Verify gh extension install logic"
   
   # Check if script has gh extension install logic
   if grep -q "gh extension install" "$SCRIPT_PATH"; then
