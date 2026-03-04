@@ -239,8 +239,14 @@ fi
 if [ "$TRY_GH_INSTALL" = true ] && command -v gh &> /dev/null; then
     print_info "Attempting to install gh-aw using 'gh extension install'..."
     
+    # Build the install command with version pinning if specified
+    INSTALL_CMD="gh extension install \"$REPO\" --force"
+    if [ -n "$VERSION" ] && [ "$VERSION" != "latest" ]; then
+        INSTALL_CMD="gh extension install \"$REPO\" --force --pin \"$VERSION\""
+    fi
+    
     # Try to install using gh
-    if gh extension install "$REPO" --force 2>&1 | tee /tmp/gh-install.log; then
+    if eval "$INSTALL_CMD" 2>&1 | tee /tmp/gh-install.log; then
         # Verify the installation succeeded
         if gh aw version &> /dev/null; then
             INSTALLED_VERSION=$(gh aw version 2>&1 | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1)
@@ -249,7 +255,7 @@ if [ "$TRY_GH_INSTALL" = true ] && command -v gh &> /dev/null; then
             
             # Set output for GitHub Actions
             if [ -n "${GITHUB_OUTPUT}" ]; then
-                echo "installed_version=${VERSION}" >> "${GITHUB_OUTPUT}"
+                echo "installed_version=${INSTALLED_VERSION}" >> "${GITHUB_OUTPUT}"
             fi
             
             exit 0

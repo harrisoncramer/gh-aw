@@ -82,15 +82,16 @@ test_gh_install() {
   fi
 }
 
-# Test 5: Verify release validation
-test_release_validation() {
+# Test 5: Verify version pinning support
+test_version_pinning() {
   echo ""
-  echo "Test 5: Verify release validation"
+  echo "Test 5: Verify version pinning for gh extension install"
   
-  if grep -q "Validating release.*exists" "$SCRIPT_PATH"; then
-    print_result "Script includes release validation" "PASS"
+  # Check if script uses --pin flag for version specification
+  if grep -q "\-\-pin.*VERSION" "$SCRIPT_PATH"; then
+    print_result "Script supports version pinning" "PASS"
   else
-    print_result "Script missing release validation" "FAIL"
+    print_result "Script missing version pinning support" "FAIL"
   fi
 }
 
@@ -116,7 +117,7 @@ test_script_syntax
 test_executable
 test_input_version
 test_gh_install
-test_release_validation
+test_version_pinning
 test_checksum_validation
 
 # Summary
